@@ -13,11 +13,11 @@ class Tree {
   
   buildTree(array, start = 0, end = array.length - 1) {
     if (start > end) return null;
-    let mid = parseInt(Math.floor((start + end) / 2));
-    let root = new Node(arr[mid]);
+    let mid = parseInt((start + end) / 2);
+    let root = new Node(array[mid]);
 
-    root.left = this.buildTree(arr, start, mid - 1);
-    root.right = this.buildTree(arr, mid + 1, end);
+    root.left = this.buildTree(array, start, mid - 1);
+    root.right = this.buildTree(array, mid + 1, end);
     return root;
   }
   
@@ -273,20 +273,22 @@ function removeDupes(array) {
   return newArr;
 }
 
-let myArray = createArray(25, 100);
-console.log(myArray);
+let myArray = createArray(40, 100);
+//console.log(myArray);
 let sortedArray = mergesort(myArray);
-console.log(sortedArray);
+//console.log(sortedArray);
 let completeArray = removeDupes(sortedArray);
 console.log(completeArray);
 
 
 let myTree = new Tree(completeArray);
 
-console.log("Tree balanced? " + myTree.isBalanced());
+//console.log("Tree balanced? " + myTree.isBalanced());
 
 console.log(myTree);
+
 console.log(myTree.inOrder());
+
 console.log(myTree.preOrder());
 console.log(myTree.postOrder());
 
