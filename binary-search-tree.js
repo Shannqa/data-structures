@@ -138,21 +138,40 @@ class Tree {
     return result;
   }
   
-  height() {
-    
+  height(current = this.root) {
+    if (current == null) return 0;
+    let leftHeight = this.height(current.left);
+    let rightHeight = this.height(current.right);
+    return Math.max(leftHeight, rightHeight) + 1;
   }
   
-  depth() {
-    
+  depth(searched, node = this.root, edges = 0) {
+    if (node == null) return;
+    if (searched == node.data) return edges;
+    if (searched < node.data) {
+      return this.depth(searched, node.left, edges + 1);
+    } else {
+      return this.depth(searched, node.right, edges + 1);
+
+    }
+
   }
   
-  isBalanced() {
-    
+  isBalanced(node = this.root) {
+    if (node == null) return true;
+  
+  let left = this.height(node.left);
+  let right = this.height(node.right);
+
+  let difference = Math.abs(left - right);
+  
+  if (difference <= 1 && this.isBalanced(node.left) == true && this.isBalanced(node.right) == true) return true;
+  
+  return false;
   }
   
-  rebalance() {
-    
-  }
+    rebalance() {
+}
 }
 
 
@@ -188,7 +207,6 @@ console.log(tree.levelOrderIteration());*/
 //tree.remove(4);
 //console.log(tree.levelOrderIteration());
 
-//prettyPrint(tree.root);
 //console.log(tree.find(81));
 
 //console.log(tree.minimumValue());
@@ -199,7 +217,77 @@ function timesTwo(item) {
 }
 
 //tree.levelOrderIteration(timesTwo);
-console.log(tree.inOrder());
+//console.log(tree.inOrder());
 
-tree.postOrder(timesTwo);
+//tree.postOrder(timesTwo);
 
+//console.log(tree.height());
+//console.log(tree.depth(97));
+//prettyPrint(tree.root);
+
+//console.log(tree.isBalanced());
+
+/* Driver code */
+
+// create a new array
+function createArray(amount, max) {
+  let array = [];
+  
+  for (let i = 0; i < amount; i++) {
+    let number = Math.floor(Math.random() * max) + 1;
+    array.push(number);
+  }
+  return array;
+}
+
+// sort the array
+function merge(left, right) {
+  let sorted = [];
+  while (left.length && right.length) {
+    if (left[0] < right[0]) {
+      sorted.push(left.shift());
+    } else {
+      sorted.push(right.shift());
+    }
+  }
+  return [...sorted, ...left, ...right];
+}
+
+function mergesort(arr) {
+  if (arr.length <= 1) return arr;
+  
+  let left = mergesort(arr.slice(0, arr.length / 2+ arr.length % 2));
+  let right = mergesort(arr.slice(-arr.length / 2));
+  
+  return merge(left, right);
+}
+
+// remove duplicates
+function removeDupes(array) {
+  let newArr = [];
+  array.forEach((number) => {
+    if (newArr.includes(number) == false) {
+      newArr.push(number);
+    }
+  });
+  return newArr;
+}
+
+let myArray = createArray(25, 100);
+console.log(myArray);
+let sortedArray = mergesort(myArray);
+console.log(sortedArray);
+let completeArray = removeDupes(sortedArray);
+console.log(completeArray);
+
+
+let myTree = new Tree(completeArray);
+
+console.log("Tree balanced? " + myTree.isBalanced());
+
+console.log(myTree);
+console.log(myTree.inOrder());
+console.log(myTree.preOrder());
+console.log(myTree.postOrder());
+
+prettyPrint(myTree.root);
