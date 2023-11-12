@@ -170,8 +170,10 @@ class Tree {
   return false;
   }
   
-    rebalance() {
-}
+  rebalance() {
+    let balancedArr = this.inOrder();
+    this.root = this.buildTree(balancedArr);
+  }
 }
 
 
@@ -189,45 +191,10 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 };
 
 
-
-
-
-let arr = [1, 4, 8, 10, 15, 23, 35, 47, 50, 67, 75, 81, 89, 92, 97];
-
-
-let tree = new Tree(arr);
-
-/*console.log(tree.inOrder());
-console.log(tree.preOrder());
-console.log(tree.postOrder());
-console.log(tree.levelOrderIteration());*/
-//tree.insert(25);
-
-
-//tree.remove(4);
-//console.log(tree.levelOrderIteration());
-
-//console.log(tree.find(81));
-
-//console.log(tree.minimumValue());
-
-
+// Random callback function
 function timesTwo(item) {
   console.log(item.data * 2);
 }
-
-//tree.levelOrderIteration(timesTwo);
-//console.log(tree.inOrder());
-
-//tree.postOrder(timesTwo);
-
-//console.log(tree.height());
-//console.log(tree.depth(97));
-//prettyPrint(tree.root);
-
-//console.log(tree.isBalanced());
-
-/* Driver code */
 
 // create a new array
 function createArray(amount, max) {
@@ -273,23 +240,38 @@ function removeDupes(array) {
   return newArr;
 }
 
-let myArray = createArray(40, 100);
-//console.log(myArray);
-let sortedArray = mergesort(myArray);
-//console.log(sortedArray);
-let completeArray = removeDupes(sortedArray);
-console.log(completeArray);
+/* Driver code */
 
+let myArray = createArray(40, 100);
+let sortedArray = mergesort(myArray);
+let completeArray = removeDupes(sortedArray);
+
+console.log(completeArray);
 
 let myTree = new Tree(completeArray);
 
-//console.log("Tree balanced? " + myTree.isBalanced());
-
-console.log(myTree);
+console.log("Tree balanced? " + myTree.isBalanced());
 
 console.log(myTree.inOrder());
-
 console.log(myTree.preOrder());
 console.log(myTree.postOrder());
+console.log(myTree.levelOrderIteration());
+
+myTree.insert(125);
+myTree.insert(194);
+myTree.insert(176);
+myTree.insert(155);
+myTree.insert(180);
+
+console.log("Tree balanced? " + myTree.isBalanced());
+
+myTree.rebalance();
+
+console.log("Tree balanced? " + myTree.isBalanced());
+
+console.log(myTree.inOrder());
+console.log(myTree.preOrder());
+console.log(myTree.postOrder());
+console.log(myTree.levelOrderIteration());
 
 prettyPrint(myTree.root);
