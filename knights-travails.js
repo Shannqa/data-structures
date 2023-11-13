@@ -1,40 +1,20 @@
-// 8x8 chessboard, filled with arrays containing all allowed moves for each square
+// 8x8 chessboard, each square's key is two coordinates "x,y", and its value is an empty array
 function createBoard() {
   let board = new Map;
 
-  for (let i = 0; i < 8; i++) {
-    for (let j = 0; j < 8; j++) {
-       board.set(`${[i, j]}`, []) ;
-      //board.set(`${[i, j]}`, []);
-
+  for (let x = 0; x < 8; x++) {
+    for (let y = 0; y < 8; y++) {
+       board.set(`${[x, y]}`, []) ;
       }
     }
-    return board;
+  return board;
 }
 
 const chessboard = createBoard();
-//console.log(chessboard.keys());
-// get all possible moves for the whole chessboard
-function getAllMoves() {
-  for (let [key] of chessboard) {
-    let [x, y] = key.split(',');
-    //console.log([x, y]);
-    x = parseInt(x);
-    y = parseInt(y);
-    let allowedM = allowedMoves([x, y])
-    chessboard.set(key, allowedM);
-   // console.log(allowedM);
-  }
-}
-
-getAllMoves();
-//console.log(chessboard.get(`${[0, 0]}`));
-//console.log(chessboard.get("0,0"));
-
 
 // possible moves of a knight that's standing in coordinates XY
 function allowedMoves(coordinates) {
-  const possibleMoves = [
+  const knightsMoves = [
     //x // y
     [1, 2],
     [2, 1],
@@ -46,7 +26,8 @@ function allowedMoves(coordinates) {
     [- 1, 2]
   ];
   
-  const moves = possibleMoves.map((move) => {
+  // list all possible moves of a knight
+  const possibleMoves = knightsMoves.map((move) => {
     const newX = coordinates[0] + move[0];
     const newY = coordinates[1] + move[1];
     if (newX < 8 && newX >= 0 &&
@@ -54,164 +35,72 @@ function allowedMoves(coordinates) {
       return `${newX},${newY}`;
     }
   }).filter((move) => move);
- // console.log(moves);
-  return moves;
+  return possibleMoves;
 }
-allowedMoves([3, 3]);
-// find the shortest path from start [x, y] to end [x, y], using breadth-first search algorithm
+
+// get all possible knight's moves for the whole chessboard
+function getAllMoves() {
+  for (let [key] of chessboard) {
+    let [x, y] = key.split(',');
+    x = parseInt(x);
+    y = parseInt(y);
+    let allowed = allowedMoves([x, y]);
+    //for a "x,y" key of the chessboard map, set as value an array of all allowed moves for this coordinate
+    chessboard.set(key, allowed);
+  }
+}
+
+getAllMoves();
+
+
+
+// find the shortest path from start "x,y" to end "x,y", using breadth-first search algorithm
 function knightMoves(start, end) {
-  console.log(start);
-  console.log(end);
+  // parse arrays with coordinates to strings in "x,y" format
+  start = start.toString();
+  end = end.toString();
+
   const visited = new Set();
   const queue = [];
   const paths = [];
   
   queue.push([start, [start]]);
   visited[start] = true;
-  //console.log(queue);
-  //console.log(visited);
-  
+
   while (queue.length > 0) {
+    // current location and full path of the knight
     let [location, path] = queue.shift();
     
-  //  console.log(location);
-   // console.log([location, path]);
     visited[location] = true;
-    visited.add(location); // needed?
-    
+
+    // the shortest path was found
     if (location == end) {
       paths.push(path);
-      console.log(paths);
+      logShortestPath(paths[0]);
       break;
     }
     
+    // get all allowed moves for the current location
     let possibleMoves = chessboard.get(location);
-   // console.log(possibleMoves);
-    //console.log(Map.isMap(possibleMoves));
     for (let move of possibleMoves) {
+      //make sure the new location hasn't been visited
       if (!visited.has(move)) {
        queue.push([move, [...path, move]]);
-      // console.log(queue);
-
       }
-
     }
-    
  }
 }
 
-
-
-knightMoves('0,0', '7,7');
-
-
-//console.log(allowedMoves(0, 0))
-
-/*function allMovesGraph(board) {
-  chessboard.
+// print the full path
+function logShortestPath(paths) {
+  let fullPath = "";
   
-  
-}*/
-
-
-/*function knightMoves(start, end) {
-  
-  let k = start;
-  let queue = [[start]];
-  let visited = [[start]];
-  
-  while (queue.length > 0) {
-         // console.log(queue);
-
-    // knight's path
-    let path = queue.shift();
-    let current = path[path.length - 1];
-    if (current == end) {
-      console.log("aa");
-      return path;
-    };
-    //console.log(end);
-    for (const move of possibleMoves) {
-      let nextPosition = [current[0] + move[0], current[1] + move[0]];
-    if (board.has(`${nextPosition}`) &&  board.get(`${nextPosition}`) == null) {
-      queue.push([...path, nextPosition]);
-      visited.push(nextPosition);
-      console.log(queue);
-
-    }
-   // if (board.has(nextPosition)
-      //console.log(board.has(`${nextPosition}`));
-    }
-    return null;
+  for (let i = 0; i < paths.length - 1; i++) {
+    fullPath += `[${paths[i]}] =>`;
   }
   
-  
-  //console.log(queue)
-  
+  fullPath += paths[paths.length - 1];
+  console.log(`The shortest path to move the knight from [${paths[0]}] to [${paths[paths.length - 1]}] is: ${fullPath}`);
 }
 
-*/
-//knightMoves([0, 0], [1, 2]);
-/*
-console.log(board);
-let n1 = board.get(`${[0, 0]}`);
-
-
-for (const key of board.keys()) {
-  console.log(key);
-}
-console.log(n1);
-console.log(board.keys())
-
-*/
-
-
-
-
-
-
-/*
-function knightMoves(start, end) {
-
-  let possibleMoves = [
-    //x // y
-    [1, 2],
-    [2, 1],
-    [2, - 1],
-    [1, - 2],
-    [- 1, - 2],
-    [- 2, - 1],
-    [- 2, 1],
-    [- 1, 2]
-  ];
-
-  let queue = [];
-  let visited = [];
-  queue.push([start]);
-  //visited.push(start);
-
-  while (queue.length > 0) {
-      
-    let movement = queue.shift();
-    //visited.push(movement);
-    if (visited.includes == [end]) {
-        return visited;
-      }
-      for (let i = 0; i < possibleMoves.length; i++) {
-
-      let move = [movement[0] + possibleMoves[i][0], movement[1] + possibleMoves[i][1]];
-
-      if (moveX >= 0 && moveX <= 7 && moveY >= 0 && moveY <= 7) {
-        queue.push([moveX, moveY]);
-      }
-      }
-    
-
-}
-console.log(queue);
-  //let board = [[0, 0], [7, 7]]
-}
-*/
-
-
-
+knightMoves([0,0], [7,7]);
